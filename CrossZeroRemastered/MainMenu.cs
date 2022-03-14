@@ -4,16 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleMenuAPI;
+using CrossZeroAPI;
 
 namespace CrossZeroRemastered {
     public class MainMenu : StandardConsoleMenu {
+        static IPlayer CreatePlayer(bool player) {
+            if (player)
+                return new ConsolePlayer();
+            return new AI();
+        }
+
         const int sizeIndex = 1;
         const int player1Index = 2;
         const int player2Index = 3;
 
         public int Size => GetInt(sizeIndex);
-        public bool Player1 => GetInt(player1Index) == 0;
-        public bool Player2 => GetInt(player2Index) == 0;
+        public IPlayer Player1 => CreatePlayer(GetInt(player1Index) == 0);
+        public IPlayer Player2 => CreatePlayer(GetInt(player2Index) == 0);
 
         public MainMenu() : base(ItemsListHelper.GetMainMenuItems(), Localization.ExitString) {
         }

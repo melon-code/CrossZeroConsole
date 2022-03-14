@@ -37,9 +37,10 @@ namespace CrossZeroRemastered {
         void DrawGrid(ReadOnlyTable grid) {
             Console.Clear();
             for (int i = 0; i < GameFieldSize; i++) {
+                Console.Write("\t");
                 for (int j = 0; j < GameFieldSize; j++)
                     DrawCell(grid[i, j]);
-                Console.WriteLine("\n---------");
+                Console.WriteLine("\n\t---------");
             }
         }
 
@@ -60,6 +61,16 @@ namespace CrossZeroRemastered {
                     break;
             }
             Console.Write(mark + " |");
+        }
+    }
+
+    public class ConsolePlayer : IPlayer {
+        public Coordinate MakeTurn() {
+            Console.Write("Введите строку: ");
+            int row = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите столбец: ");
+            int column = Convert.ToInt32(Console.ReadLine());
+            return new Coordinate(row, column);
         }
     }
 }

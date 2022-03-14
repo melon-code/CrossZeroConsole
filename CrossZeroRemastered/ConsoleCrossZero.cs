@@ -9,7 +9,7 @@ namespace CrossZeroRemastered {
             EndMenu endMenu;
             while (endMenuResult == MenuEndResult.Further && menu.ShowDialog() == MenuEndResult.Further) {
                 do {
-                    ConsoleGameProcessor processor = new ConsoleGameProcessor(menu.Size, new AI(), new AI(), Marks.Cross);
+                    ConsoleGameProcessor processor = new ConsoleGameProcessor(menu.Size, menu.Player1, menu.Player2, Marks.Cross);
                     processor.Play();
                     endMenu = new EndMenu();
                     endMenuResult = endMenu.ShowDialog();
