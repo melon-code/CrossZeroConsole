@@ -1,15 +1,52 @@
 ﻿using System;
+using System.Text;
 using CrossZeroAPI;
 
 namespace CrossZeroRemastered {
     public class ConsoleGameProcessor : TTCGameProcessor {
+        static void DrawLine(string line, bool addEOL) {
+            if (addEOL)
+                Console.WriteLine();
+            Console.WriteLine(tab + line);
+        }
+
+        public static void DrawLine(string line) {
+            DrawLine(line, false);
+        }
+
+        public static void DrawString(string str) {
+            Console.Write(tab + str);
+        }
+
+        const string tab = "\t";
+        const string horizon = "-";
+        const int horizonBlockLength = 4;
+
+        string horizontalLine = null;
+
+        bool OnlyAI => Player1 is IAI && Player2 is IAI;
+        string HorizontalLine {
+            get {
+                if (horizontalLine != null)
+                    return horizontalLine;
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < GameFieldSize * horizonBlockLength + 1; i++)
+                    builder.Append(horizon);
+                horizontalLine = builder.ToString();
+                return horizontalLine;
+            }
+        }
+
         public ConsoleGameProcessor(int fieldSize, IPlayer player1, IPlayer player2, Marks player1Mark) : base(fieldSize, player1, player2, player1Mark) {
         }
 
         public override void RenderGameField(ReadOnlyTable gameField) {
             DrawGrid(gameField);
-            Console.WriteLine("\nPress Enter to continue");
-            Console.ReadLine();
+            if (OnlyAI) {
+                Console.WriteLine();
+                DrawString("Нажмите Enter для продолжения");
+                Console.ReadLine();
+            }
         }
 
         public override void RenderLastFieldAndResult(ReadOnlyTable gameField, EndResult result) {
@@ -17,30 +54,29 @@ namespace CrossZeroRemastered {
             string resStr;
             switch (result) {
                 case EndResult.CrossWin:
-                    resStr = "Cross WIN!";
+                    resStr = "Крестики победили!";
                     break;
                 case EndResult.ZeroWin:
-                    resStr = "Zero WIN!";
+                    resStr = "Нолики победили!";
                     break;
                 case EndResult.Draw:
-                    resStr = "DRAW!";
+                    resStr = "Ничья!";
                     break;
                 default:
                     resStr = "WOOOP";
                     break;
             }
-            Console.WriteLine("\n" + resStr);
+            DrawLine(resStr, true);
             Console.WriteLine();
-            //Console.ReadLine();
         }
 
         void DrawGrid(ReadOnlyTable grid) {
             Console.Clear();
             for (int i = 0; i < GameFieldSize; i++) {
-                Console.Write("\t");
+                DrawString("|");
                 for (int j = 0; j < GameFieldSize; j++)
                     DrawCell(grid[i, j]);
-                Console.WriteLine("\n\t---------");
+                DrawLine(HorizontalLine, true);
             }
         }
 
@@ -60,17 +96,26 @@ namespace CrossZeroRemastered {
                     mark = "?";
                     break;
             }
-            Console.Write(mark + " |");
+            Console.Write(" " + mark + " |");
         }
     }
 
     public class ConsolePlayer : IPlayer {
+        readonly int number;
+        readonly string mark;
+
+        public ConsolePlayer(int playerNumber, string playerMark) {
+            number = playerNumber;
+            mark = playerMark;
+        }
+
         public Coordinate MakeTurn() {
-            Console.Write("Введите строку: ");
+            ConsoleGameProcessor.DrawLine($"Ход Игрока №{number} -- " + mark);
+            ConsoleGameProcessor.DrawString("Введите строку: ");
             int row = Convert.ToInt32(Console.ReadLine());
-            Console.Write("Введите столбец: ");
+            ConsoleGameProcessor.DrawString("Введите столбец: ");
             int column = Convert.ToInt32(Console.ReadLine());
-            return new Coordinate(row, column);
+            return new Coordinate(row - 1, column - 1);
         }
     }
 }
