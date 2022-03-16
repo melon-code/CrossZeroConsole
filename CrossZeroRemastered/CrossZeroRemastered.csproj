@@ -51,7 +51,10 @@
   <ItemGroup>
     <Compile Include="ConsoleCrossZero.cs" />
     <Compile Include="ConsoleGameProcessor.cs" />
-    <Compile Include="MainMenu.cs" />
+    <Compile Include="ConsolePlayer.cs" />
+    <Compile Include="Menu\EndMenu.cs" />
+    <Compile Include="Menu\ItemsListHelper.cs" />
+    <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
